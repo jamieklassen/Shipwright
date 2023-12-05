@@ -34,6 +34,7 @@
 #ifdef ENABLE_REMOTE_CONTROL
 #include "Enhancements/crowd-control/CrowdControl.h"
 #include "Enhancements/game-interactor/GameInteractor_Sail.h"
+#include "Enhancements/game-interactor/GameInteractor_Anchor.h"
 #endif
 
 #include "Enhancements/game-interactor/GameInteractor.h"
@@ -128,6 +129,10 @@ namespace SohGui {
     std::shared_ptr<ItemTrackerWindow> mItemTrackerWindow;
     std::shared_ptr<RandomizerSettingsWindow> mRandomizerSettingsWindow;
     std::shared_ptr<SohModalWindow> mModalWindow;
+#ifdef ENABLE_REMOTE_CONTROL
+    std::shared_ptr<AnchorPlayerLocationWindow> mAnchorPlayerLocationWindow;
+    std::shared_ptr<AnchorLogWindow> mAnchorLogWindow;
+#endif
 
     void SetupGuiElements() {
         auto gui = LUS::Context::GetInstance()->GetWindow()->GetGui();
@@ -191,6 +196,12 @@ namespace SohGui {
         mModalWindow = std::make_shared<SohModalWindow>("gOpenWindows.modalWindowEnabled", "Modal Window");
         gui->AddGuiWindow(mModalWindow);
         mModalWindow->Show();
+#ifdef ENABLE_REMOTE_CONTROL
+        mAnchorPlayerLocationWindow = std::make_shared<AnchorPlayerLocationWindow>("gRemote.AnchorPlayerLocationWindow", "Anchor Player Location Window");
+        gui->AddGuiWindow(mAnchorPlayerLocationWindow);
+        mAnchorLogWindow = std::make_shared<AnchorLogWindow>("gRemote.AnchorLogWindow", "Anchor Log");
+        gui->AddGuiWindow(mAnchorLogWindow);
+#endif
     }
 
     void Destroy() {
@@ -214,6 +225,10 @@ namespace SohGui {
         mStatsWindow = nullptr;
         mConsoleWindow = nullptr;
         mSohMenuBar = nullptr;
+#ifdef ENABLE_REMOTE_CONTROL
+        mAnchorPlayerLocationWindow = nullptr;
+        mAnchorLogWindow = nullptr;
+#endif
     }
 
     void RegisterPopup(std::string title, std::string message, std::string button1, std::string button2, std::function<void()> button1callback, std::function<void()> button2callback) {
