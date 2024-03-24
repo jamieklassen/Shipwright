@@ -1039,6 +1039,11 @@ void CheckTrackerWindow::DrawElement() {
 }
 
 bool shouldHideArea(ImGuiTextFilter& checkSearch, std::map<RandomizerCheckArea, std::vector<RandomizerCheckObject>> checksByArea, RandomizerCheckArea rcArea) {
+    bool shouldHideFilteredAreas = CVarGetInteger("gCheckTrackerHideFilteredAreas", 0);
+    if (!shouldHideFilteredAreas) {
+        return false;
+    }
+
     // checkSearch.isActive && filtered objects is empty
     // rcArea.objects.reduce(true, passesTextFilter)
 
@@ -1612,6 +1617,11 @@ void CheckTrackerSettingsWindow::DrawElement() {
         RecalculateAreaTotals();
     }
     UIWidgets::Tooltip("If enabled, will show GS locations in the tracker regardless of tokensanity settings.");
+
+    // Filtering settings
+    UIWidgets::PaddedSeparator();
+    UIWidgets::EnhancementCheckbox("Filter Empty Areas", "gCheckTrackerHideFilteredAreas");
+    UIWidgets::Tooltip("If enabled, will hide area headers that have no locations matching filter");
 
     ImGui::TableNextColumn();
 
