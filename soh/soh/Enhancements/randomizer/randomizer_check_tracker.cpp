@@ -116,6 +116,7 @@ RandomizerCheckArea previousArea = RCAREA_INVALID;
 RandomizerCheckArea currentArea = RCAREA_INVALID;
 OSContPad* trackerButtonsPressed;
 
+std::string extraInfo(RandomizerCheckObject rcObj);
 bool passesTextFilter(ImGuiTextFilter& checkSearch, const RandomizerCheckObject rcObject);
 bool shouldHideArea(ImGuiTextFilter& checkSearch, std::map<RandomizerCheckArea, std::vector<RandomizerCheckObject>> checksByArea, const RandomizerCheckArea rcArea);
 void BeginFloatWindows(std::string UniqueName, bool& open, ImGuiWindowFlags flags = 0);
@@ -1416,8 +1417,21 @@ void DrawLocation(RandomizerCheckObject rcObj) {
     ImGui::PopStyleColor();
 
     //Draw the extra info
-    txt = "";
+    txt = extraInfo(rcObj);
+    if (txt != "") {
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(extraColor.r / 255.0f, extraColor.g / 255.0f, extraColor.b / 255.0f,
+                                                    extraColor.a / 255.0f));
+        ImGui::SameLine();
+        ImGui::Text(" (%s)", txt.c_str());
+        ImGui::PopStyleColor();
+    }
+}
 
+std::string extraInfo(RandomizerCheckObject rcObj) {
+    RandomizerCheckTrackerData checkData = gSaveContext.checkTrackerData[rcObj.rc];
+    RandomizerCheckStatus status = checkData.status;
+    bool skipped = checkData.skipped;
+    std::string txt;
     if (checkData.hintItem != 0) {
         // TODO hints
     } else if (status != RCSHOW_UNCHECKED) {
@@ -1468,13 +1482,50 @@ void DrawLocation(RandomizerCheckObject rcObj) {
         txt = "Skipped"; // TODO language
     }
 
-    if (txt != "") {
-        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(extraColor.r / 255.0f, extraColor.g / 255.0f, extraColor.b / 255.0f, extraColor.a / 255.0f));
-        ImGui::SameLine();
-        ImGui::Text(" (%s)", txt.c_str());
-        ImGui::PopStyleColor();
-    }
+    return txt;
 }
+
+// void placeholder() {
+//     if (checkData.hintItem != 0) {
+//         // TODO hints
+//     } else if (status != RCSHOW_UNCHECKED) {
+//         if (IS_RANDO) {
+//             switch (status) {
+//                 case RCSHOW_SAVED:
+//                 case RCSHOW_COLLECTED:
+//                 case RCSHOW_SCUMMED:
+//                     txt = OTRGlobals::Instance->gRandomizer->EnumToSpoilerfileGetName[gSaveContext.itemLocations[rcObj.rc].get.rgID][gSaveContext.language];
+//                     break;
+//                 case RCSHOW_IDENTIFIED:
+//                 case RCSHOW_SEEN:
+//                     if (gSaveContext.itemLocations[rcObj.rc].get.rgID == RG_ICE_TRAP) {
+//                         if (status == RCSHOW_IDENTIFIED) {
+//                             txt = gSaveContext.itemLocations[rcObj.rc].get.trickName;
+//                         } else {
+//                             txt = OTRGlobals::Instance->gRandomizer->EnumToSpoilerfileGetName[gSaveContext.itemLocations[rcObj.rc].get.fakeRgID][gSaveContext.language];
+//                         }
+//                     } else {
+//                         txt = OTRGlobals::Instance->gRandomizer->EnumToSpoilerfileGetName[gSaveContext.itemLocations[rcObj.rc].get.rgID][gSaveContext.language];
+//                     }
+//                     if (status == RCSHOW_IDENTIFIED) {
+//                         txt += fmt::format(" - {}", gSaveContext.checkTrackerData[rcObj.rc].price);
+//                     }
+//                     break;
+//             }
+//         } else {
+//             if (IsHeartPiece(rcObj.ogItemId)) {
+//                 if (gSaveContext.language == LANGUAGE_ENG || gSaveContext.language == LANGUAGE_GER) {
+//                     txt = ItemFromGIID(rcObj.ogItemId).GetName().english;
+//                 } else if (gSaveContext.language == LANGUAGE_FRA) {
+//                     txt = ItemFromGIID(rcObj.ogItemId).GetName().french;
+//                 }
+//             }
+//         }
+//     }
+//     if (txt == "" && skipped) {
+//         txt = "Skipped"; // TODO language
+//     }
+// }
 
 static std::set<std::string> rainbowCVars = {
     "gCheckTrackerAreaMainIncompleteColor", "gCheckTrackerAreaExtraIncompleteColor",

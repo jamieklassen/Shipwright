@@ -50,6 +50,7 @@ bool IsVisibleInCheckTracker(RandomizerCheckObject rcObj);
 void InitTrackerData(bool isDebug);
 RandomizerCheckArea GetCheckArea();
 void UpdateCheck(uint32_t, RandomizerCheckTrackerData);
+std::string extraInfo(RandomizerCheckObject rcObj);
 } // namespace CheckTracker
 
 
