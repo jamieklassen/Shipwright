@@ -117,13 +117,6 @@ endif()
 
 find_package(Python3 COMPONENTS Interpreter)
 
-find_package(GTest)
-gtest_add_tests(
-    TARGET soh
-    SOURCES "${CMAKE_SOURCE_DIR}/soh/soh/Enhancements/randomizer/randomizer_check_tracker_test.cpp"
-
-)
-
 # Target to generate OTRs
 add_custom_target(
     ExtractAssets

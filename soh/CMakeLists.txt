@@ -150,6 +150,7 @@ file(GLOB_RECURSE soh__Enhancements RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
 
 list(REMOVE_ITEM soh__Enhancements "soh/Enhancements/gamecommand.h")
 list(FILTER soh__Enhancements EXCLUDE REGEX "soh/Enhancements/gfx.*")
+# list(REMOVE_ITEM soh__Enhancements "soh/Enhancements/randomizer/randomizer_check_tracker_test.cpp")
 
 # handle crowd control removals
 list(REMOVE_ITEM soh__Enhancements "soh/Enhancements/crowd-control/soh.cs")
@@ -186,6 +187,10 @@ source_group("soh\\Enhancements\\tts" REGULAR_EXPRESSION "soh/Enhancements/tts/*
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     set_source_files_properties(soh/Enhancements/tts/tts.cpp PROPERTIES COMPILE_FLAGS "/utf-8")
 endif()
+
+file(GLOB_RECURSE soh__Enhancements_tests RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+    "soh/Enhancements/*_test.cpp"
+)
 # }}}
 
 if(NOT CMAKE_SYSTEM_NAME MATCHES "NintendoSwitch|CafeOS")
@@ -258,6 +263,11 @@ set(ALL_FILES
     ${soh__Extractor}
     ${soh__Resource}
     ${src__}
+)
+
+set(ALL_TESTS
+    ${soh__Enhancements}
+    ${soh__Enhancements_tests}
 )
 
 ################################################################################
@@ -348,6 +358,19 @@ else()
     message("Boost found in " ${Boost_INCLUDE_DIRS})
     set(BOOST-INCLUDE ${Boost_INCLUDE_DIRS})
 endif()
+################################################################################
+# GoogleTest
+################################################################################
+# enable_testing()
+find_package(GTest)
+target_link_libraries(${PROJECT_NAME} PRIVATE GTest::gtest_main)
+gtest_discover_tests(${PROJECT_NAME})
+# target_link_libraries(soh_test PRIVATE "${ADDITIONAL_LIBRARY_DEPENDENCIES}")
+
+# set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
+# include(GoogleTest)
+
 ################################################################################
 # Compile definitions
 ################################################################################
